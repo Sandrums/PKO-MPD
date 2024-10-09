@@ -11,22 +11,22 @@ void print_dominos(vector<pair<int, int>> &dominos ) {
     }
 }
 
-/// Concatenation assumes the number of dots on each side of a domino is a one digit number
-/// Atgrieş 1, ja skaitli x var iegût no a un b, veicot atïautâs darbîbas
+/// KonkatenÄcija pieÅ†em, ka a un b ir viencipara
+/// AtgrieÅ¾ 1, ja skaitli x var iegÅ«t no a un b, veicot atÄ¼autÄs darbÄ«bas
 int matches_pattern(int x, int a, int b) {
     if (a < b) {swap(a,b);}
     if (a+b == x || a-b == x || (b != 0 && a%b == 0 && a/b == x) || a*b == x || (a != 0 && a*10+b == x) || (b != 0 && b*10+a == x)) {return 1;}
     return 0;
 }
 
-/// Izrçíina izmaksas
+/// IzrÄ“Ä·ina izmaksas
 int my_cost(vector<int>& pattern, vector<pair<int, int>>& solution) {
     int cost = 0;
-    /// Pârbauda atbilstîbu ğablonam
+    /// PÄrbauda atbilstÄ«bu Å¡ablonam
     for (int i=0; i<pattern.size(); i++) {
         cost += 1-matches_pattern(pattern[i], solution[i].first, solution[i].second);
     }
-    /// Pârbauda atbilstîbu "domino likumam" - ka kauliòu pusçs, kas saskaras, ierakstîto punktu skaits sakrît
+    /// PÄrbauda atbilstÄ«bu "domino likumam" - ka kauliÅ†u pusÄ“s, kas saskaras, ierakstÄ«to punktu skaits sakrÄ«t
     for (int i=0; i<pattern.size()-1; i++) {
         if (solution[i].second != solution[i+1].first) {cost++;}
     }
@@ -34,7 +34,7 @@ int my_cost(vector<int>& pattern, vector<pair<int, int>>& solution) {
     return cost;
 }
 
-/// Atgrieş kâdu domino virkni, ko var ar vienu gâjienu iegût no dotâs virknes; r - skaitlis no 0 lîdz 99, kas norâda, cik bieşi mainît vietâm divus kauliòus (alternatîva - pagriezt kauliòu otrâdi)
+/// AtgrieÅ¾ kÄdu domino virkni, ko var ar vienu gÄjienu iegÅ«t no dotÄs virknes; r - skaitlis no 0 lÄ«dz 99, kas norÄda, cik bieÅ¾i mainÄ«t vietÄm divus kauliÅ†us (alternatÄ«va - pagriezt kauliÅ†u otrÄdi)
 vector<pair<int, int>> random_neighbor(vector<pair<int, int>> solution, int r) {
     if (rand() % 100 >= r) {
         int i = rand() % solution.size();
@@ -49,7 +49,7 @@ vector<pair<int, int>> random_neighbor(vector<pair<int, int>> solution, int r) {
     return solution;
 }
 
-/// Meklç risinâjumu ar LAHC algoritmu. Beidz, kad 1000 reizes pçc kârtas nav bijuği uzlabojumi
+/// MeklÄ“ risinÄjumu ar LAHC algoritmu. Beidz, kad 1000 reizes pÄ“c kÄrtas nav bijuÅ¡i uzlabojumi
 vector<pair<int, int>> lahc(vector<int>& pattern, vector<pair<int, int>> solution, int n, int r) {
     vector<pair<int, int>> best = solution;
     vector<pair<int, int>> i = solution;
@@ -81,20 +81,20 @@ vector<pair<int, int>> lahc(vector<int>& pattern, vector<pair<int, int>> solutio
     return best;
 }
 
-/// Meklç risinâjumu ar evolucionâro algoritmu. Beidz, kad 1000 reizes pçc kârtas nav bijuği uzlabojumi
+/// MeklÄ“ risinÄjumu ar evolucionÄro algoritmu. Beidz, kad 1000 reizes pÄ“c kÄrtas nav bijuÅ¡i uzlabojumi
 vector<pair<int, int>> evolutionary(vector<int>& pattern, vector<pair<int, int>> solution, int n, int r) {
     vector<vector<pair<int, int>>> I;
     vector<vector<pair<int, int>>> mating_pool;
     vector<pair<int, int>> best;
     int best_cost = 1e9;
-    /// Sâkumâ populâcija ir dotais risinâjums solution un n-1 nejauğa tâ permutâcija
+    /// SÄkumÄ populÄcija ir dotais risinÄjums solution un n-1 nejauÅ¡a tÄ permutÄcija
     for (int i=0; i<n; i++) {
         I.push_back(solution);
         random_shuffle(solution.begin(), solution.end());
     }
     int no_improvements = 0;
     while (no_improvements < 1000) {
-        /// Lai nebûtu problçmu ar float neprecizitâtçm, izmanto nevis vidçjo veselîbu, bet veselîbu summu.
+        /// Lai nebÅ«tu problÄ“mu ar float neprecizitÄtÄ“m, izmanto nevis vidÄ“jo veselÄ«bu, bet veselÄ«bu summu.
         int fitness_sum = 0;
         for (int i=0; i<n; i++) {
             fitness_sum += my_cost(pattern, I[i]);
@@ -113,7 +113,7 @@ vector<pair<int, int>> evolutionary(vector<int>& pattern, vector<pair<int, int>>
                 no_improvements++;
             }
         }
-        /// Ja mating pool ir tukğs (tâ var gadîties, kad visiem ir vienâdas izmaksas, tâtad, nevienam izmaksas nav labâkas par vidçjâm), ieliek tajâ katru otro risinâjumu
+        /// Ja mating pool ir tukÅ¡s (tÄ var gadÄ«ties, kad visiem ir vienÄdas izmaksas, tÄtad, nevienam izmaksas nav labÄkas par vidÄ“jÄm), ieliek tajÄ katru otro risinÄjumu
         if (mating_pool.size() == 0) {
             for (int i=0; i<n; i+=2) {
                 mating_pool.push_back(I[i]);
@@ -121,7 +121,7 @@ vector<pair<int, int>> evolutionary(vector<int>& pattern, vector<pair<int, int>>
         }
         I = mating_pool;
         int mating_size = mating_pool.size();
-        /// Kamçr I vçl ir brîvas vietas, pçc kârtas no katra mating pool indivîda paòem kâdu kaimiòu
+        /// KamÄ“r I vÄ“l ir brÄ«vas vietas, pÄ“c kÄrtas no katra mating pool indivÄ«da paÅ†em kÄdu kaimiÅ†u
         for (int i=0; i<n-mating_size; i++) {
             I.push_back(random_neighbor(mating_pool[i%mating_size], r));
         }
@@ -150,7 +150,7 @@ int main(int argc, char * argv[]){
     if (algorithm == 1) {cout << "LAHC\n";}
     else {cout << "Evolutionary\n";}
 
-    /// Sâkuma risinâjums ir visi domino pçc kârtas
+    /// SÄkuma risinÄjums ir visi domino pÄ“c kÄrtas
     vector<pair<int, int>> solution;
     for (int i=0; i<=max_pts; i++) {
         for (int j=i; j<=max_pts; j++) {
